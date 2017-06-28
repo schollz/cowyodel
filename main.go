@@ -11,17 +11,20 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/urfave/cli"
 )
 
 var debug bool
+var version string
 
 func main() {
 	var passphrase, page, server string
 	var encrypt, store, name, direct bool
 	app := cli.NewApp()
-
+	app.Version = version
+	app.Compiled = time.Now()
 	app.Name = "cowyodel"
 	app.Usage = "tool to upload/download encrypted/unencrypted text/binary to cowyo servers"
 	app.UsageText = `Upload a file:
