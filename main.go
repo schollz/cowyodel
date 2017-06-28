@@ -26,7 +26,7 @@ func main() {
 	app.Version = version
 	app.Compiled = time.Now()
 	app.Name = "cowyodel"
-	app.Usage = "tool to upload/download encrypted/unencrypted text/binary to cowyo servers"
+	app.Usage = "upload/download encrypted/unencrypted text/binary to cowyo.com"
 	app.UsageText = `Upload a file:
 		cowyodel upload README.md
 		cat README.md | cowyodel upload
@@ -45,8 +45,7 @@ func main() {
 
 	 Binary-file uploading/downloading:
 		cowyodel upload --direct --name image.jpg
-		cowyodel download --direct image.jpg
-	 `
+		cowyodel download --direct image.jpg`
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "server",
