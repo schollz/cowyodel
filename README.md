@@ -24,16 +24,26 @@ go get -u -v github.com/schollz/cowyodel
 
 or just download from the [latest releases](https://github.com/schollz/cowyodel/releases/latest).
 
-## Run
+## Usage 
+
+### Upload
 
 ```
-cowyodel upload FILE
+$ cowyodel upload FILE
+saved to FriendlyFish
 ```
 
 OR
 
 ```
-cat FILE | cowyodel upload
+$ cat FILE | cowyodel upload
+saved to FriendlyFish
+```
+
+### Download
+
+```
+cowyodel download FriendlyFish > FILE
 ```
 
 ## License
