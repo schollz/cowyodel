@@ -14,7 +14,7 @@
 Demo
 ====
 
-[![asciicast](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR.png)](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR)
+[![asciicast](demo.gif)](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR)
 
 Getting Started
 ===============
