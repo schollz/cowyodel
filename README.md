@@ -7,9 +7,9 @@
 <a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 </p>
 
-<p align="center">CLI tool for interacting with <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
+<p align="center">A command-line tool for interacting with <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
 
-*cowyo* is a self-contained wiki server that makes jotting notes easy and _fast_. *cowyodel* is a CLI tool that allows simple interaction with a *cowyo* instance, allowing you to upload/download text/binary that is encrypted/unencrypted.
+*cowyodel* is a command-line tool that allows simple interaction with [a cowyo server](https://github.com/schollz/cowyo), allowing you easily upload/download text/binary that is encrypted/unencrypted, thus facilitating simple sharing between computers.
 
 Getting Started
 ===============
@@ -40,7 +40,7 @@ $ cat README.md | cowyodel upload
 uploaded to 2-adoring-thompson
 ```
 
-The uploads are fully compatible with [cowyo](https://cowyo.com), so you can reach them at `cowyo.com/2-adoring-thompson` to view/edit. There are also options to keep the name of the file, see Advanced Usage.
+The uploads are fully compatible with [cowyo](https://cowyo.com), so you can reach them at the specified name (e.g.  `cowyo.com/2-adoring-thompson` in above example) to view/edit. You can also specify your own name using `-name`, see Advanced Usage below.
 
 ### Download the document
 
