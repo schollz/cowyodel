@@ -1,6 +1,6 @@
 <p align="center">
 <img
-    src="logo.jpg"
+    src="logo.png"
     width="260" height="80" border="0" alt="cowyodel">
 <br>
 <a href="https://travis-ci.org/schollz/cowyodel"><img src="https://img.shields.io/travis/schollz/cowyodel.svg?style=flat-square" alt="Build Status"></a>
