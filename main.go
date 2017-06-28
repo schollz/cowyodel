@@ -20,7 +20,7 @@ var debug bool
 func main() {
 	app := cli.NewApp()
 	var passphrase, page, server string
-	var encrypt, store bool
+	var encrypt, store, direct bool
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "server",
@@ -28,11 +28,7 @@ func main() {
 			Usage:       "server to use",
 			Destination: &server,
 		},
-		cli.StringFlag{
-			Name:        "passphrase, a",
-			Usage:       "passphrase to use for encryption",
-			Destination: &passphrase,
-		},
+
 		cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "debug mode",
@@ -60,6 +56,16 @@ func main() {
 					Usage:       "specific page to use",
 					Destination: &page,
 				},
+				cli.StringFlag{
+					Name:        "passphrase, a",
+					Usage:       "passphrase to use for encryption",
+					Destination: &passphrase,
+				},
+				cli.BoolFlag{
+					Name:        "direct",
+					Usage:       "direct mode (Gzip + Base64 encoding)",
+					Destination: &direct,
+				},
 			},
 			Action: func(c *cli.Context) error {
 				var data []byte
@@ -70,7 +76,7 @@ func main() {
 						return err
 					}
 					if debug {
-						log.Printf("stdin data: %v\n", string(data))
+						log.Printf("stdin data")
 					}
 				} else {
 					data, err = ioutil.ReadFile(c.Args().Get(0))
@@ -78,16 +84,37 @@ func main() {
 						return err
 					}
 					if debug {
-						log.Printf("file data: %v\n", string(data))
+						log.Printf("file data")
 					}
 				}
-				return uploadData(server, page, string(data), encrypt, passphrase, store)
+				dataString := ""
+				if direct {
+					dataString, err = BytesToString(data)
+					if err != nil {
+						return err
+					}
+				} else {
+					dataString = string(data)
+				}
+				return uploadData(server, page, dataString, encrypt, passphrase, store)
 			},
 		},
 		{
 			Name:    "download",
 			Aliases: []string{"d"},
 			Usage:   "download document",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:        "passphrase, a",
+					Usage:       "passphrase to use for encryption",
+					Destination: &passphrase,
+				},
+				cli.BoolFlag{
+					Name:        "direct",
+					Usage:       "direct mode (Gzip + Base64 encoding)",
+					Destination: &direct,
+				},
+			},
 			Action: func(c *cli.Context) error {
 				page := ""
 				if c.NArg() == 1 {
@@ -95,7 +122,7 @@ func main() {
 				} else {
 					return errors.New("Must specify page")
 				}
-				return downloadData(server, page, passphrase)
+				return downloadData(server, page, passphrase, direct)
 			},
 		},
 	}
@@ -110,7 +137,7 @@ func main() {
 func uploadData(server string, page string, text string, encrypt bool, passphrase string, store bool) (err error) {
 	if page == "" {
 		// generate page name
-		page = "foo12"
+		page = GetRandomName(1)
 	}
 	if encrypt || passphrase != "" {
 		if debug {
@@ -171,14 +198,14 @@ func uploadData(server string, page string, text string, encrypt bool, passphras
 		log.Printf("%v", target)
 	}
 	if target.Message == "Saved" {
-		fmt.Println("uploaded to", page)
+		fmt.Printf("uploaded to %s\n", page)
 	} else {
 		fmt.Println(target.Message)
 	}
 	return
 }
 
-func downloadData(server string, page string, passphrase string) (err error) {
+func downloadData(server string, page string, passphrase string, direct bool) (err error) {
 	type Payload struct {
 		Page string `json:"page"`
 	}
@@ -234,6 +261,24 @@ func downloadData(server string, page string, passphrase string) (err error) {
 			target.Text = decrypted
 		}
 	}
-	fmt.Println(target.Text)
+
+	if direct {
+		var data []byte
+		data, err = StringToByte(target.Text)
+		if err != nil {
+			return
+		}
+		err = ioutil.WriteFile(page, data, 0644)
+		if err != nil {
+			return
+		}
+		fmt.Printf("Wrote binary data to '%s'\n", page)
+	} else {
+		err = ioutil.WriteFile(page, []byte(target.Text), 0644)
+		if err != nil {
+			return
+		}
+		fmt.Printf("Wrote text to '%s'\n", page)
+	}
 	return
 }
