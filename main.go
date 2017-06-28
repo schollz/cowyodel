@@ -15,6 +15,8 @@ import (
 	"github.com/urfave/cli"
 )
 
+var debug bool
+
 func main() {
 	app := cli.NewApp()
 	var passphrase, page, server string
@@ -25,6 +27,16 @@ func main() {
 			Value:       "https://cowyo.com",
 			Usage:       "server to use",
 			Destination: &server,
+		},
+		cli.StringFlag{
+			Name:        "passphrase, a",
+			Usage:       "passphrase to use for encryption",
+			Destination: &passphrase,
+		},
+		cli.BoolFlag{
+			Name:        "debug",
+			Usage:       "debug mode",
+			Destination: &debug,
 		},
 	}
 	app.Commands = []cli.Command{
@@ -44,11 +56,6 @@ func main() {
 					Destination: &store,
 				},
 				cli.StringFlag{
-					Name:        "passphrase, a",
-					Usage:       "passphrase to use for encryption",
-					Destination: &passphrase,
-				},
-				cli.StringFlag{
 					Name:        "page, p",
 					Usage:       "specific page to use",
 					Destination: &page,
@@ -62,13 +69,17 @@ func main() {
 					if err != nil {
 						return err
 					}
-					log.Printf("stdin data: %v\n", string(data))
+					if debug {
+						log.Printf("stdin data: %v\n", string(data))
+					}
 				} else {
 					data, err = ioutil.ReadFile(c.Args().Get(0))
 					if err != nil {
 						return err
 					}
-					log.Printf("file data: %v\n", string(data))
+					if debug {
+						log.Printf("file data: %v\n", string(data))
+					}
 				}
 				return uploadData(server, page, string(data), encrypt, passphrase, store)
 			},
@@ -84,7 +95,7 @@ func main() {
 				} else {
 					return errors.New("Must specify page")
 				}
-				return downloadData(server, page)
+				return downloadData(server, page, passphrase)
 			},
 		},
 	}
@@ -101,8 +112,10 @@ func uploadData(server string, page string, text string, encrypt bool, passphras
 		// generate page name
 		page = "foo12"
 	}
-	if encrypt {
-		log.Println("Encryption activated")
+	if encrypt || passphrase != "" {
+		if debug {
+			log.Println("Encryption activated")
+		}
 		if passphrase == "" {
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("Enter passphrase: ")
@@ -113,6 +126,7 @@ func uploadData(server string, page string, text string, encrypt bool, passphras
 		if err != nil {
 			return err
 		}
+		encrypt = true
 	}
 
 	type Payload struct {
@@ -147,13 +161,24 @@ func uploadData(server string, page string, text string, encrypt bool, passphras
 	}
 	defer resp.Body.Close()
 
-	var target interface{}
+	type Response struct {
+		Message string `json:"message"`
+		Success bool   `json:"success"`
+	}
+	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
-	log.Printf("%v", target)
+	if debug {
+		log.Printf("%v", target)
+	}
+	if target.Message == "Saved" {
+		fmt.Println("uploaded to", page)
+	} else {
+		fmt.Println(target.Message)
+	}
 	return
 }
 
-func downloadData(server string, page string) (err error) {
+func downloadData(server string, page string, passphrase string) (err error) {
 	type Payload struct {
 		Page string `json:"page"`
 	}
@@ -190,6 +215,25 @@ func downloadData(server string, page string) (err error) {
 	}
 	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
-	log.Printf("%v", target)
+	if debug {
+		log.Printf("%v", target)
+	}
+	if target.Encrypted {
+		if debug {
+			log.Println("Decryption activated")
+		}
+		if passphrase == "" {
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Fprint(os.Stderr, "Enter passphrase: ")
+			passphrase, _ = reader.ReadString('\n')
+			passphrase = strings.TrimSpace(passphrase)
+		}
+		var decrypted string
+		decrypted, err = DecryptString(target.Text, passphrase)
+		if err == nil {
+			target.Text = decrypted
+		}
+	}
+	fmt.Println(target.Text)
 	return
 }
