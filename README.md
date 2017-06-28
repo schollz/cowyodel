@@ -117,6 +117,46 @@ $ cowyodel --server myserver.com upload FILE
 uploaded to 2-adoring-thompson
 ```
 
+### Help
+
+```
+$ cowyodel -h
+NAME:
+   cowyodel - upload/download encrypted/unencrypted text/binary to cowyo.com
+
+USAGE:
+   Upload a file:
+    cowyodel upload README.md
+    cat README.md | cowyodel upload
+   
+   Download a file:
+    cowyodel download 2-adoring-thompson
+
+   Persist (and don't delete after first access):
+    cowyodel upload --store FILE
+
+   Specify filename:
+    cowyodel upload --name README.md
+
+   Client-side encryption:
+    cowyodel upload --encrypt README.md
+
+   Binary-file uploading/downloading:
+    cowyodel upload --direct --name image.jpg
+    cowyodel download --direct image.jpg
+
+COMMANDS:
+     upload, u    upload document
+     download, d  download document
+     help, h      Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --server value  cowyo server to use (default: "https://cowyo.com")
+   --debug         debug mode
+   --help, -h      show help
+   --version, -v   print the version
+```
+
 License
 ========
 
