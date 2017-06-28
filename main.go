@@ -18,14 +18,37 @@ import (
 var debug bool
 
 func main() {
-	app := cli.NewApp()
 	var passphrase, page, server string
-	var encrypt, store, direct bool
+	var encrypt, store, name, direct bool
+	app := cli.NewApp()
+
+	app.Name = "cowyodel"
+	app.Usage = "tool to upload/download encrypted/unencrypted text/binary to cowyo servers"
+	app.UsageText = `Upload a file:
+		cowyodel upload README.md
+		cat README.md | cowyodel upload
+   
+	 Download a file:
+		cowyodel download 2-adoring-thompson
+
+	 Persist (and don't delete after first access):
+		cowyodel upload --store FILE
+
+   Specify filename:
+		cowyodel upload --name README.md
+
+   Client-side encryption:
+		cowyodel upload --encrypt README.md
+
+	 Binary-file uploading/downloading:
+		cowyodel upload --direct --name image.jpg
+		cowyodel download --direct image.jpg
+	 `
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "server",
 			Value:       "https://cowyo.com",
-			Usage:       "server to use",
+			Usage:       "cowyo server to use",
 			Destination: &server,
 		},
 
@@ -51,10 +74,10 @@ func main() {
 					Usage:       "store and persist after reading",
 					Destination: &store,
 				},
-				cli.StringFlag{
-					Name:        "page, p",
-					Usage:       "specific page to use",
-					Destination: &page,
+				cli.BoolFlag{
+					Name:        "name, n",
+					Usage:       "use name of file",
+					Destination: &name,
 				},
 				cli.StringFlag{
 					Name:        "passphrase, a",
@@ -85,6 +108,9 @@ func main() {
 					}
 					if debug {
 						log.Printf("file data")
+					}
+					if name {
+						page = c.Args().Get(0)
 					}
 				}
 				dataString := ""
