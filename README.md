@@ -7,9 +7,14 @@
 <a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 </p>
 
-<p align="center">A command-line tool for interacting with <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
+<p align="center">Easily move things between computers using  <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
 
-*cowyodel* is a command-line tool that allows simple interaction with [a cowyo server](https://github.com/schollz/cowyo), allowing you easily upload/download text/binary that is encrypted/unencrypted, thus facilitating simple sharing between computers.
+*cowyodel* allows easy and simple sharing of text/data between computers.  *cowyodel* is a command-line tool that allows simple interaction with [a cowyo server](https://github.com/schollz/cowyo), providing a simple way to upload/download text/binary that is encrypted/unencrypted.
+
+Demo
+====
+
+[![asciicast](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR.png)](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR)
 
 Getting Started
 ===============
@@ -25,8 +30,6 @@ go get -u -v github.com/schollz/cowyodel
 or just download from the [latest releases](https://github.com/schollz/cowyodel/releases/latest).
 
 ## Basic usage 
-
-[![asciicast](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR.png)](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR)
 
 ### Upload a document
 
@@ -56,8 +59,8 @@ Wrote text to '2-adoring-thompson'
 By default, the first time you access it (via web or downloading), it will be erased. To prevent this, you can add `--store`.
 
 
-## Advanced usage
-
+Advanced Usage
+===============
 
 ### Persist (and don't delete after first access):
 
@@ -114,6 +117,7 @@ $ cowyodel --server myserver.com upload FILE
 uploaded to 2-adoring-thompson
 ```
 
-## License
+License
+========
 
 MIT
