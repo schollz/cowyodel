@@ -26,6 +26,8 @@ or just download from the [latest releases](https://github.com/schollz/cowyodel/
 
 ## Basic usage 
 
+[![asciicast](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR.png)](https://asciinema.org/a/Oq6enXjipBXqFcugqV7mSvdpR)
+
 ### Upload a document
 
 To share a document with another computer, you first can upload it to the cowyo instance using `cowyodel upload FILE`.

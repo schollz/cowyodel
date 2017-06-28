@@ -269,7 +269,7 @@ func downloadData(server string, page string, passphrase string, direct bool) (e
 	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
 	if debug {
-		log.Printf("%v", target)
+		log.Printf("%+v", target)
 	}
 	if target.Encrypted {
 		if debug {
