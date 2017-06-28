@@ -62,7 +62,7 @@ By default, the first time you access it (via web or downloading), it will be er
 Advanced Usage
 ===============
 
-### Persist (and don't delete after first access):
+### Persist (and don't delete after first access)
 
 ```
 $ cowyodel upload --store FILE
@@ -108,7 +108,7 @@ $ sha256sum image.jpg 2-adoring-thompson
 62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *2-adoring-thompson
 ```
 
-### Self-hosting files
+### Self-hosting cowyo server
 
 You can also [host your own cowyo server](https://github.com/schollz/cowyo) and use that instead of the default `cowyo.com`. 
 
