@@ -21,7 +21,7 @@ var version string
 
 func main() {
 	var passphrase, page, server string
-	var encrypt, store, name, direct bool
+	var encrypt, store, name, binary bool
 	app := cli.NewApp()
 	app.Version = version
 	app.Compiled = time.Now()
@@ -44,8 +44,8 @@ func main() {
 		cowyodel upload --encrypt README.md
 
 	 Binary-file uploading/downloading:
-		cowyodel upload --direct --name image.jpg
-		cowyodel download --direct image.jpg`
+		cowyodel upload --binary --name image.jpg
+		cowyodel download image.jpg`
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "server",
@@ -87,9 +87,9 @@ func main() {
 					Destination: &passphrase,
 				},
 				cli.BoolFlag{
-					Name:        "direct",
-					Usage:       "direct mode (Gzip + Base64 encoding)",
-					Destination: &direct,
+					Name:        "binary, b",
+					Usage:       "binary mode (Gzip + Base64 encoding)",
+					Destination: &binary,
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -116,7 +116,7 @@ func main() {
 					}
 				}
 				dataString := ""
-				if direct {
+				if binary {
 					dataString, err = BytesToString(data)
 					if err != nil {
 						return err
@@ -149,11 +149,6 @@ func main() {
 					Usage:       "passphrase to use for encryption",
 					Destination: &passphrase,
 				},
-				cli.BoolFlag{
-					Name:        "direct",
-					Usage:       "direct mode (Gzip + Base64 encoding)",
-					Destination: &direct,
-				},
 			},
 			Action: func(c *cli.Context) error {
 				page := ""
@@ -162,7 +157,7 @@ func main() {
 				} else {
 					return errors.New("Must specify page")
 				}
-				return downloadData(server, page, passphrase, direct)
+				return downloadData(server, page, passphrase, binary)
 			},
 		},
 	}
@@ -259,7 +254,7 @@ func uploadData(server string, page string, text string, encrypt bool, passphras
 	return
 }
 
-func downloadData(server string, page string, passphrase string, direct bool) (err error) {
+func downloadData(server string, page string, passphrase string, binary bool) (err error) {
 	type Payload struct {
 		Page string `json:"page"`
 	}
@@ -316,23 +311,22 @@ func downloadData(server string, page string, passphrase string, direct bool) (e
 		}
 	}
 
-	if direct {
-		var data []byte
-		data, err = StringToByte(target.Text)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(page, data, 0644)
+	// assume its binary data
+	binaryData, binaryAttemptError := StringToByte(target.Text)
+	if binaryAttemptError == nil {
+		err = ioutil.WriteFile(page, binaryData, 0644)
 		if err != nil {
 			return
 		}
 		fmt.Printf("Wrote binary data to '%s'\n", page)
-	} else {
-		err = ioutil.WriteFile(page, []byte(target.Text), 0644)
-		if err != nil {
-			return
-		}
-		fmt.Printf("Wrote text to '%s'\n", page)
+		return
 	}
+
+	// its just a text file
+	err = ioutil.WriteFile(page, []byte(target.Text), 0644)
+	if err != nil {
+		return
+	}
+	fmt.Printf("Wrote text to '%s'\n", page)
 	return
 }
