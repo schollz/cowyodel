@@ -115,14 +115,14 @@ func main() {
 						page = c.Args().Get(0)
 					}
 				}
-				dataString := ""
+				text := ""
 				if binary {
-					dataString, err = BytesToString(data)
+					text, err = BytesToString(data)
 					if err != nil {
 						return err
 					}
 				} else {
-					dataString = string(data)
+					text = string(data)
 				}
 				exists, err := pageExists(server, page)
 				if err != nil {
@@ -136,7 +136,29 @@ func main() {
 						return nil
 					}
 				}
-				return uploadData(server, page, dataString, encrypt, passphrase, store)
+
+				if page == "" {
+					// generate page name
+					page = GetRandomName(1)
+				}
+				if encrypt || passphrase != "" {
+					if debug {
+						log.Println("Encryption activated")
+					}
+					if passphrase == "" {
+						reader := bufio.NewReader(os.Stdin)
+						fmt.Print("Enter passphrase: ")
+						passphrase, _ = reader.ReadString('\n')
+						passphrase = strings.TrimSpace(passphrase)
+					}
+					text, err = EncryptString(text, passphrase)
+					if err != nil {
+						return err
+					}
+					encrypt = true
+				}
+
+				return uploadData(server, page, text, encrypt, store)
 			},
 		},
 		{
@@ -183,28 +205,7 @@ func pageExists(server string, page string) (exists bool, err error) {
 	return
 }
 
-func uploadData(server string, page string, text string, encrypt bool, passphrase string, store bool) (err error) {
-	if page == "" {
-		// generate page name
-		page = GetRandomName(1)
-	}
-	if encrypt || passphrase != "" {
-		if debug {
-			log.Println("Encryption activated")
-		}
-		if passphrase == "" {
-			reader := bufio.NewReader(os.Stdin)
-			fmt.Print("Enter passphrase: ")
-			passphrase, _ = reader.ReadString('\n')
-			passphrase = strings.TrimSpace(passphrase)
-		}
-		text, err = EncryptString(text, passphrase)
-		if err != nil {
-			return err
-		}
-		encrypt = true
-	}
-
+func uploadData(server string, page string, text string, encrypt bool, store bool) (err error) {
 	type Payload struct {
 		NewText     string `json:"new_text"`
 		Page        string `json:"page"`
@@ -308,6 +309,10 @@ func downloadData(server string, page string, passphrase string, binary bool) (e
 		decrypted, err = DecryptString(target.Text, passphrase)
 		if err == nil {
 			target.Text = decrypted
+		} else {
+			fmt.Println("Incorrect password, returning to server")
+			uploadData(server, page, target.Text, true, false)
+			return nil
 		}
 	}
 
