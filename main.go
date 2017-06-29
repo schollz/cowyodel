@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/schollz/cowyo/encrypt"
 	"github.com/urfave/cli"
 )
 
@@ -22,7 +23,7 @@ func main() {
 
 func run() error {
 	var passphrase, page, server string
-	var encrypt, store, name, binary bool
+	var encryptFlag, store, name, binary bool
 	app := cli.NewApp()
 	app.Version = version
 	app.Compiled = time.Now()
@@ -70,7 +71,7 @@ func run() error {
 				cli.BoolFlag{
 					Name:        "encrypt, e",
 					Usage:       "encrypt using passphrase",
-					Destination: &encrypt,
+					Destination: &encryptFlag,
 				},
 				cli.BoolFlag{
 					Name:        "store, s",
@@ -142,7 +143,7 @@ func run() error {
 					// generate page name
 					page = GetRandomName(1)
 				}
-				if encrypt || passphrase != "" {
+				if encryptFlag || passphrase != "" {
 					if debug {
 						log.Println("Encryption activated")
 					}
@@ -152,14 +153,14 @@ func run() error {
 						passphrase, _ = reader.ReadString('\n')
 						passphrase = strings.TrimSpace(passphrase)
 					}
-					text, err = EncryptString(text, passphrase)
+					text, err = encrypt.EncryptString(text, passphrase)
 					if err != nil {
 						return err
 					}
-					encrypt = true
+					encryptFlag = true
 				}
 
-				return uploadData(server, page, text, encrypt, store)
+				return uploadData(server, page, text, encryptFlag, store)
 			},
 		},
 		{

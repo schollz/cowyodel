@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/schollz/cowyo/encrypt"
 )
 
 func pageExists(server string, page string) (exists bool, err error) {
@@ -128,7 +130,7 @@ func downloadData(server string, page string, passphrase string) (err error) {
 			passphrase = strings.TrimSpace(passphrase)
 		}
 		var decrypted string
-		decrypted, err = DecryptString(target.Text, passphrase)
+		decrypted, err = encrypt.DecryptString(target.Text, passphrase)
 		if err == nil {
 			target.Text = decrypted
 		} else {

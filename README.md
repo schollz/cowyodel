@@ -120,7 +120,7 @@ _Note:_ you should not access uploaded binary files at via the web browser as it
 You can also [host your own cowyo server](https://github.com/schollz/cowyo) and use that instead of the default `cowyo.com`. To host *cowyo* yourself, just use
 
 ```
-$ go get github.com/schollz/cowyo
+$ go get github.com/schollz/cowyo/...
 $ cowyo
 Running cowyo server (version ) at http://localhost:8050
 ```
@@ -183,7 +183,11 @@ This tool was inspired by the following:
 - [wormhole](XX)
 - [piknik](XX)
 
-*cowyodel* is not nessecarily more innovative than these, but it has the added advntage of being able to use a public web server to directly edit documents that you upload, and also its < 1k LOC.
+*cowyodel* does not represent a significant innovation over these tools. However, there are some advantages that *cowyodel* provides:
+
+- Trust. You can run your own *cowyo* server on a domain you trust.
+- Direct edting. You can directly edit plaintext documents on the *cowyo* server using the web interface.
+- Simplicity. The codebase is < 1k LOC, and is straightforward to understand.
 
 Development
 ===========
@@ -191,6 +195,7 @@ Development
 To run tests, make sure to start a `cowyo` server first.
 
 ```
+$ go get -u github.com/schollz/cowyo/...
 $ cowyo
 $ go test
 ```
