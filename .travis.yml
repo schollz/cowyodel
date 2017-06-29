@@ -4,4 +4,6 @@ go:
   - tip
 
 before_install:
+  - go get -u github.com/schollz/cowyo
   - go get -u github.com/schollz/cowyodel
+  - cowyo &

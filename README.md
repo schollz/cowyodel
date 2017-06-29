@@ -173,6 +173,27 @@ GLOBAL OPTIONS:
    --version, -v   print the version
 ```
 
+
+Inspiration
+===========
+
+This tool was inspired by the following:
+
+- [wormhole](XX)
+- [piknik](XX)
+
+*cowyodel* is not nessecarily more innovative than these, but it has the added advntage of being able to use a public web server to directly edit documents that you upload, and also its < 1k LOC.
+
+Development
+===========
+
+To run tests, make sure to start a `cowyo` server first.
+
+```
+$ cowyo
+$ go test
+```
+
 License
 ========
 
