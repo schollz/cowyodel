@@ -9,7 +9,7 @@
 
 <p align="center">Easily move things between computers using  <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
 
-*cowyodel* allows easy and simple sharing of text/data between computers.  *cowyodel* is a command-line tool that allows simple interaction with [a cowyo server](https://github.com/schollz/cowyo), providing a simple way to upload/download text/binary that is encrypted/unencrypted.
+*cowyodel* allows simple and secure sharing of text/data between computers.  *cowyodel* temporarily transfers your data (with optional client-side encryption) to [a cowyo server](https://github.com/schollz/cowyo) where it resides until the other computer downloads it using the provided secret key code.
 
 Demo
 ====
@@ -31,9 +31,9 @@ or just download from the [latest releases](https://github.com/schollz/cowyodel/
 
 ## Basic usage 
 
-### Upload a document
+### Upload
 
-To share a document with another computer, you first can upload it to the cowyo instance using `cowyodel upload FILE`.
+To share a document with another computer, you first upload it to a cowyo server. By default *cowyodel* uses cowyo.com, but [you can host your own cowyo server](https://github.com/schollz/cowyo) as well (see Advanced Usage).
 
 ```
 $ cowyodel upload README.md
@@ -45,18 +45,20 @@ $ cat README.md | cowyodel upload
 uploaded to 2-adoring-thompson
 ```
 
-The uploads are fully compatible with [cowyo](https://cowyo.com), so you can reach them at the specified name (e.g.  `cowyo.com/2-adoring-thompson` in above example) to view/edit. You can also specify your own name using `-name`, see Advanced Usage below.
+After uploading, you will recieve a code-phrase, in the above example the code-phrase is `2-adoring-thompson`. If you don't want to use code phrases, you can also specify your own name using `-name`, see Advanced Usage below.
 
-### Download the document
+The uploads are fully compatible with [the cowyo server](https://cowyo.com), so you can view and edit them using the code-phrase (e.g.  `cowyo.com/2-adoring-thompson` in above example). 
 
-On any other computer connected to the internet, you can download the file using the name using `cowyodel download NAME`, where `NAME` is also the URL you can access it (e.g. cowyo.com/NAME).
+### Download
+
+On any other computer connected to the internet, you can download the file using the name using `cowyodel download code-phrase`.
 
 ```
 $ cowyodel download 2-adoring-thompson
 Wrote text to '2-adoring-thompson'
 ```
 
-By default, the first time you access it (via web or downloading), it will be erased. To prevent this, you can add `--store`.
+After downloading, it will be erased from the cowyo.com. If you don't trust this server, you can also specify your own (see Advanced Usage). To prevent this, you can add `--store`.
 
 
 Advanced Usage
@@ -90,11 +92,13 @@ Enter passphrase: 123
 wrote text to '2-adoring-thompson'
 ```
 
-The encryption is fully compatible with th server-side encryption on [cowyo.com](https://cowyo.com), so you can still use the web browser to decrypt/encrypt your document.
+The encryption is fully compatible with the server-side encryption on [cowyo.com](https://cowyo.com), so you can still use the web browser to decrypt/encrypt your document.
+
+If the decryption fails, the document will be re-uploaded to the cowyo server.
 
 ### Binary files
 
-Binary files are Gzipped and then Base64 encoded for transfering to/from the server. Thus, you should not access them via the web browser as it would risk corrupting them.
+Binary files are Gzipped and then Base64 encoded for transfering to/from the server. To upload just use `--binary`, and downloading is exactly the same.
 
 ```
 $ cowyodel upload --binary image.jpg
@@ -108,12 +112,24 @@ $ sha256sum image.jpg 2-adoring-thompson
 62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *2-adoring-thompson
 ```
 
+_Note:_ you should not access uploaded binary files at via the web browser as it would risk corrupting them.
+
 ### Self-hosting cowyo server
 
-You can also [host your own cowyo server](https://github.com/schollz/cowyo) and use that instead of the default `cowyo.com`. 
+You can also [host your own cowyo server](https://github.com/schollz/cowyo) and use that instead of the default `cowyo.com`. To host *cowyo* yourself, just use
 
 ```
-$ cowyodel --server myserver.com upload FILE
+$ go get github.com/schollz/cowyo
+$ cowyo
+Running cowyo server (version ) at http://localhost:8050
+```
+
+(If you don't have Go installed, [you can also download a release version](https://github.com/schollz/cowyo/releases/latest)).
+
+Once you have a self-hosted cowyo server, you just need to specify the server when running *cowyodel*:
+
+```
+$ cowyodel --server http://localhost:8050 upload FILE
 uploaded to 2-adoring-thompson
 ```
 
