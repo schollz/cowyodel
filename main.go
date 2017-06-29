@@ -124,6 +124,18 @@ func main() {
 				} else {
 					dataString = string(data)
 				}
+				exists, err := pageExists(server, page)
+				if err != nil {
+					return err
+				}
+				if exists {
+					reader := bufio.NewReader(os.Stdin)
+					fmt.Printf("Page '%s' exists, do you want to overwrite (y/n): ", page)
+					answer, _ := reader.ReadString('\n')
+					if !strings.Contains(strings.ToLower(answer), "y") {
+						return nil
+					}
+				}
 				return uploadData(server, page, dataString, encrypt, passphrase, store)
 			},
 		},
@@ -159,7 +171,21 @@ func main() {
 	if errMain != nil {
 		log.Println(errMain)
 	}
+}
 
+func pageExists(server string, page string) (exists bool, err error) {
+	req, err := http.NewRequest("GET", server+"/"+page+"/raw", nil)
+	if err != nil {
+		return
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	webcontent, err := ioutil.ReadAll(resp.Body)
+	exists = len(webcontent) > 0
+	return
 }
 
 func uploadData(server string, page string, text string, encrypt bool, passphrase string, store bool) (err error) {
