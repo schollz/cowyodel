@@ -97,10 +97,10 @@ The encryption is fully compatible with th server-side encryption on [cowyo.com]
 Binary files are Gzipped and then Base64 encoded for transfering to/from the server. Thus, you should not access them via the web browser as it would risk corrupting them.
 
 ```
-$ cowyodel upload --direct image.jpg
+$ cowyodel upload --binary image.jpg
 uploaded to 2-adoring-thompson
 
-$ cowyodel download --direct image.jpg
+$ cowyodel download image.jpg
 wrote binary data to '2-adoring-thompson'
 
 $ sha256sum image.jpg 2-adoring-thompson
@@ -142,8 +142,8 @@ USAGE:
     cowyodel upload --encrypt README.md
 
    Binary-file uploading/downloading:
-    cowyodel upload --direct --name image.jpg
-    cowyodel download --direct image.jpg
+    cowyodel upload --binary --name image.jpg
+    cowyodel download image.jpg
 
 COMMANDS:
      upload, u    upload document
