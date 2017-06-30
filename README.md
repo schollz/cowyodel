@@ -4,7 +4,7 @@
     width="260" height="80" border="0" alt="cowyodel">
 <br>
 <a href="https://travis-ci.org/schollz/cowyodel"><img src="https://img.shields.io/travis/schollz/cowyodel.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat-square" alt="Version"></a>
+<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-0.2.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 <img src="https://img.shields.io/badge/coverage-51%25-yellow.svg?style=flat-square" alt="Code Coverage">
 </p>
 
@@ -180,8 +180,8 @@ Inspiration
 
 This tool was inspired by the following:
 
-- [wormhole](XX)
-- [piknik](XX)
+- [wormhole](https://github.com/warner/magic-wormhole)
+- [piknik](https://github.com/jedisct1/piknik)
 
 *cowyodel* does not represent a significant innovation over these tools. However, there are some advantages that *cowyodel* provides:
 
