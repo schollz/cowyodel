@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -15,17 +16,46 @@ import (
 )
 
 func pageExists(server string, page string) (exists bool, err error) {
-	req, err := http.NewRequest("GET", server+"/"+page+"/raw", nil)
+	type Payload struct {
+		Page string `json:"page"`
+	}
+
+	data := Payload{
+		Page: page,
+	}
+
+	payloadBytes, err := json.Marshal(data)
 	if err != nil {
 		return
 	}
+	body := bytes.NewReader(payloadBytes)
+
+	req, err := http.NewRequest("POST", server+"/exists", body)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
-	webcontent, err := ioutil.ReadAll(resp.Body)
-	exists = len(webcontent) > 0
+
+	type Response struct {
+		Message string `json:"message"`
+		Success bool   `json:"success"`
+		Exists  bool   `json:"exists"`
+	}
+	var target Response
+	json.NewDecoder(resp.Body).Decode(&target)
+	if debug {
+		log.Printf("%v", target)
+	}
+	if !target.Success {
+		err = errors.New(target.Message)
+	}
+	exists = target.Exists
 	return
 }
 
@@ -118,6 +148,10 @@ func downloadData(server string, page string, passphrase string) (err error) {
 	json.NewDecoder(resp.Body).Decode(&target)
 	if debug {
 		log.Printf("%+v", target)
+	}
+	if target.Text == "" {
+		fmt.Printf("'%s' not found", page)
+		return nil
 	}
 	if target.Encrypted {
 		if debug {
