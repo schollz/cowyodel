@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -49,9 +48,7 @@ func pageExists(server string, page string) (exists bool, err error) {
 	}
 	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
-	if debug {
-		log.Printf("%v", target)
-	}
+	log.Trace("%v", target)
 	if !target.Success {
 		err = errors.New(target.Message)
 	}
@@ -98,9 +95,7 @@ func uploadData(server string, page string, text string, encrypt bool, store boo
 	}
 	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
-	if debug {
-		log.Printf("%v", target)
-	}
+	log.Trace("%v", target)
 	if target.Message == "Saved" {
 		fmt.Printf("uploaded to %s\n", page)
 	} else {
@@ -146,17 +141,13 @@ func downloadData(server string, page string, passphrase string) (err error) {
 	}
 	var target Response
 	json.NewDecoder(resp.Body).Decode(&target)
-	if debug {
-		log.Printf("%+v", target)
-	}
+	log.Trace("%+v", target)
 	if target.Text == "" {
 		fmt.Printf("'%s' not found", page)
 		return nil
 	}
 	if target.Encrypted {
-		if debug {
-			log.Println("Decryption activated")
-		}
+		log.Trace("Decryption activated")
 		if passphrase == "" {
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Fprint(os.Stderr, "Enter passphrase: ")

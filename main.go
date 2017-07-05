@@ -5,16 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/schollz/cowyo/encrypt"
+	"github.com/schollz/lumber"
 	"github.com/urfave/cli"
 )
 
 var debug bool
+var log *lumber.ConsoleLogger
 var version string
 
 func main() {
@@ -97,21 +98,22 @@ func run() error {
 			Action: func(c *cli.Context) error {
 				var data []byte
 				var err error
+				if debug {
+					log = lumber.NewConsoleLogger(lumber.TRACE)
+				} else {
+					log = lumber.NewConsoleLogger(lumber.WARN)
+				}
 				if c.NArg() == 0 {
+					log.Trace("stdin")
 					data, err = ioutil.ReadAll(os.Stdin)
 					if err != nil {
 						return err
 					}
-					if debug {
-						log.Printf("stdin data")
-					}
 				} else {
+					log.Trace("file data")
 					data, err = ioutil.ReadFile(c.Args().Get(0))
 					if err != nil {
 						return err
-					}
-					if debug {
-						log.Printf("file data")
 					}
 					if name {
 						page = c.Args().Get(0)
@@ -146,7 +148,9 @@ func run() error {
 
 				if encryptFlag || passphrase != "" {
 					if debug {
-						log.Println("Encryption activated")
+						log = lumber.NewConsoleLogger(lumber.TRACE)
+					} else {
+						log = lumber.NewConsoleLogger(lumber.WARN)
 					}
 					if passphrase == "" {
 						reader := bufio.NewReader(os.Stdin)
@@ -189,7 +193,7 @@ func run() error {
 
 	errMain := app.Run(os.Args)
 	if errMain != nil {
-		log.Println(errMain)
+		log.Error(errMain.Error())
 	}
 	return errMain
 }
