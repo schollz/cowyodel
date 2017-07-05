@@ -141,7 +141,7 @@ func run() error {
 
 				if page == "" {
 					// generate page name
-					page = GetRandomName(1)
+					page = GetRandomName()
 				}
 				if encryptFlag || passphrase != "" {
 					if debug {

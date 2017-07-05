@@ -1,9 +1,13 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestNames(t *testing.T) {
-	if GetRandomName(1) == GetRandomName(0) {
+	fmt.Println(GetRandomName())
+	if GetRandomName() == GetRandomName() {
 		t.Errorf("RandomName is not Random!")
 	}
 }
