@@ -117,6 +117,11 @@ func run() error {
 						page = c.Args().Get(0)
 					}
 				}
+				if page == "" {
+					// generate page name
+					page = GetRandomName()
+				}
+
 				text := ""
 				if binary {
 					text, err = BytesToString(data)
@@ -139,10 +144,6 @@ func run() error {
 					}
 				}
 
-				if page == "" {
-					// generate page name
-					page = GetRandomName()
-				}
 				if encryptFlag || passphrase != "" {
 					if debug {
 						log.Println("Encryption activated")
