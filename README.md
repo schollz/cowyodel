@@ -4,8 +4,8 @@
     width="260" height="80" border="0" alt="cowyodel">
 <br>
 <a href="https://travis-ci.org/schollz/cowyodel"><img src="https://img.shields.io/travis/schollz/cowyodel.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-0.2.0-brightgreen.svg?style=flat-square" alt="Version"></a>
-<img src="https://img.shields.io/badge/coverage-51%25-yellow.svg?style=flat-square" alt="Code Coverage">
+<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-1.0.0-brightgreen.svg?style=flat-square" alt="Version"></a>
+<img src="https://img.shields.io/badge/coverage-49%25-yellow.svg?style=flat-square" alt="Code Coverage">
 </p>
 
 <p align="center">Easily move things between computers using  <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
@@ -38,25 +38,25 @@ To share a document with another computer, you first upload it to a cowyo server
 
 ```
 $ cowyodel upload README.md
-uploaded to 2-adoring-thompson
+uploaded to total-perform-retro
 ```
 or
 ```
 $ cat README.md | cowyodel upload
-uploaded to 2-adoring-thompson
+uploaded to total-perform-retro
 ```
 
-After uploading, you will recieve a code-phrase, in the above example the code-phrase is `2-adoring-thompson`. If you don't want to use code phrases, you can also specify your own name using `-name`, see Advanced Usage below.
+After uploading, you will recieve a code-phrase, in the above example the code-phrase is `total-perform-retro`. If you don't want to use code phrases, you can also specify your own name using `-name`, see Advanced Usage below.
 
-The uploads are fully compatible with [the cowyo server](https://cowyo.com), so you can view and edit them using the code-phrase (e.g.  `cowyo.com/2-adoring-thompson` in above example). 
+The uploads are fully compatible with [the cowyo server](https://cowyo.com), so you can view and edit them using the code-phrase (e.g.  `cowyo.com/total-perform-retro` in above example). 
 
 ### Download
 
 On any other computer connected to the internet, you can download the file using the name using `cowyodel download code-phrase`.
 
 ```
-$ cowyodel download 2-adoring-thompson
-Wrote text to '2-adoring-thompson'
+$ cowyodel download total-perform-retro
+Wrote text to 'total-perform-retro'
 ```
 
 After downloading, it will be erased from the cowyo.com. If you don't trust this server, you can also specify your own (see Advanced Usage). To prevent this, you can add `--store`.
@@ -86,11 +86,11 @@ It is possible that someone could have used that page (and locked it) which woul
 ```
 $ cowyodel upload --encrypt README.md
 Enter passphrase: 123
-uploaded to 2-adoring-thompson
+uploaded to total-perform-retro
 
-$ cowyodel download 2-adoring-thompson
+$ cowyodel download total-perform-retro
 Enter passphrase: 123
-wrote text to '2-adoring-thompson'
+wrote text to 'total-perform-retro'
 ```
 
 The encryption is fully compatible with the server-side encryption on [cowyo.com](https://cowyo.com), so you can still use the web browser to decrypt/encrypt your document.
@@ -103,14 +103,14 @@ Binary files are Gzipped and then Base64 encoded for transfering to/from the ser
 
 ```
 $ cowyodel upload --binary image.jpg
-uploaded to 2-adoring-thompson
+uploaded to total-perform-retro
 
 $ cowyodel download image.jpg
-wrote binary data to '2-adoring-thompson'
+wrote binary data to 'total-perform-retro'
 
-$ sha256sum image.jpg 2-adoring-thompson
+$ sha256sum image.jpg total-perform-retro
 62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *logo.jpg
-62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *2-adoring-thompson
+62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *total-perform-retro
 ```
 
 _Note:_ you should not access uploaded binary files at via the web browser as it would risk corrupting them.
@@ -131,7 +131,7 @@ Once you have a self-hosted cowyo server, you just need to specify the server wh
 
 ```
 $ cowyodel --server http://localhost:8050 upload FILE
-uploaded to 2-adoring-thompson
+uploaded to total-perform-retro
 ```
 
 ### Help
@@ -147,7 +147,7 @@ USAGE:
     cat README.md | cowyodel upload
    
    Download a file:
-    cowyodel download 2-adoring-thompson
+    cowyodel download CODEPHRASE
 
    Persist (and don't delete after first access):
     cowyodel upload --store FILE
