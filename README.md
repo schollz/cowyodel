@@ -10,7 +10,7 @@
 
 <p align="center">Easily move things between computers using  <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
 
-*cowyodel* allows simple and secure sharing of text/data between computers.  *cowyodel* temporarily transfers your data (with optional client-side encryption) to [a cowyo server](https://github.com/schollz/cowyo) where it resides until the other computer downloads it using the provided secret key code.
+*cowyodel* allows simple and secure sharing of text/data between computers.  *cowyodel* temporarily transfers your data (with optional client-side encryption) to [a cowyo server](https://github.com/schollz/cowyo) where it resides until the other computer downloads it using the provided secret code phrase.
 
 Demo
 ====
