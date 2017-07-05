@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -116,7 +117,7 @@ func run() error {
 						return err
 					}
 					if name {
-						page = c.Args().Get(0)
+						page = filepath.Base(c.Args().Get(0))
 					}
 				}
 				if page == "" {
