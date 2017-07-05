@@ -4,16 +4,19 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/schollz/lumber"
 )
 
-var SERVER string
+var SERVER_STRING string
 
 func init() {
-	SERVER = "http://localhost:8050"
+	SERVER_STRING = "localhost:8050"
 }
 
 func TestCowyo(t *testing.T) {
-	exists, err := pageExists(SERVER, "alsdkfjalksdfjlaf")
+	log = lumber.NewConsoleLogger(lumber.TRACE)
+	exists, err := pageExists(SERVER_STRING, "alsdkfjalksdfjlaf")
 	if err != nil {
 		t.Error(err)
 	}
@@ -21,11 +24,11 @@ func TestCowyo(t *testing.T) {
 		t.Error("alsdkfjalksdfjlaf should not exist!")
 	}
 
-	err = uploadData(SERVER, "testpage", "testtext", false, true)
+	err = uploadData(SERVER_STRING, "testpage", "testtext", false, true)
 	if err != nil {
 		t.Error(err)
 	}
-	exists, err = pageExists(SERVER, "testpage")
+	exists, err = pageExists(SERVER_STRING, "testpage")
 	if err != nil {
 		t.Error(err)
 	}
@@ -33,7 +36,7 @@ func TestCowyo(t *testing.T) {
 		t.Error("testpage should exist!")
 	}
 
-	err = downloadData(SERVER, "testpage", "")
+	err = downloadData(SERVER_STRING, "testpage", "")
 	if err != nil {
 		t.Error(err)
 	}

@@ -135,6 +135,7 @@ func run() error {
 				}
 				exists, err := pageExists(server, page)
 				if err != nil {
+					log.Trace("Could not check if exists")
 					return err
 				}
 				if exists {
@@ -180,6 +181,12 @@ func run() error {
 				},
 			},
 			Action: func(c *cli.Context) error {
+				if debug {
+					log = lumber.NewConsoleLogger(lumber.TRACE)
+				} else {
+					log = lumber.NewConsoleLogger(lumber.WARN)
+				}
+
 				page := ""
 				if c.NArg() == 1 {
 					page = c.Args().Get(0)

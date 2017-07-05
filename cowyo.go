@@ -14,7 +14,13 @@ import (
 	"github.com/schollz/cowyo/encrypt"
 )
 
-func pageExists(server string, page string) (exists bool, err error) {
+func pageExists(serverString string, page string) (exists bool, err error) {
+	server, user, password, err2 := parseURL(serverString)
+	if err2 != nil {
+		err = err2
+		log.Trace("Problem parsing '%s'", serverString)
+		return
+	}
 	type Payload struct {
 		Page string `json:"page"`
 	}
@@ -33,6 +39,9 @@ func pageExists(server string, page string) (exists bool, err error) {
 	if err != nil {
 		return
 	}
+	if user != "" {
+		req.SetBasicAuth(user, password)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
@@ -50,13 +59,23 @@ func pageExists(server string, page string) (exists bool, err error) {
 	json.NewDecoder(resp.Body).Decode(&target)
 	log.Trace("%v", target)
 	if !target.Success {
+		log.Trace("Problem parsing response")
 		err = errors.New(target.Message)
 	}
 	exists = target.Exists
 	return
 }
 
-func uploadData(server string, page string, text string, encrypt bool, store bool) (err error) {
+func uploadData(serverString string, page string, text string, encrypt bool, store bool) (err error) {
+	server, user, password, err2 := parseURL(serverString)
+	if err2 != nil {
+		err = err2
+		log.Trace("Problem parsing '%s'", serverString)
+		return
+	}
+	log.Trace("server: '%s'", server)
+	log.Trace("uploading page: '%s'", page)
+
 	type Payload struct {
 		NewText     string `json:"new_text"`
 		Page        string `json:"page"`
@@ -81,10 +100,14 @@ func uploadData(server string, page string, text string, encrypt bool, store boo
 	if err != nil {
 		return
 	}
+	if user != "" {
+		req.SetBasicAuth(user, password)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		log.Trace("Problem with request")
 		return
 	}
 	defer resp.Body.Close()
@@ -104,7 +127,15 @@ func uploadData(server string, page string, text string, encrypt bool, store boo
 	return
 }
 
-func downloadData(server string, page string, passphrase string) (err error) {
+func downloadData(serverString string, page string, passphrase string) (err error) {
+	server, user, password, err2 := parseURL(serverString)
+	if err2 != nil {
+		err = err2
+		return
+	}
+	log.Trace("server: '%s'", server)
+	log.Trace("page: '%s'", page)
+
 	type Payload struct {
 		Page string `json:"page"`
 	}
@@ -123,10 +154,16 @@ func downloadData(server string, page string, passphrase string) (err error) {
 	if err != nil {
 		return
 	}
+	if user != "" {
+		req.SetBasicAuth(user, password)
+		log.Trace("user: '%s'", user)
+		log.Trace("password: '%s'", password)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		log.Trace("Problem with request")
 		return
 	}
 	defer resp.Body.Close()
