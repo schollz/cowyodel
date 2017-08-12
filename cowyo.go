@@ -66,7 +66,7 @@ func pageExists(serverString string, page string) (exists bool, err error) {
 	return
 }
 
-func uploadData(serverString string, page string, text string, encrypt bool, store bool) (err error) {
+func uploadData(serverString string, name string, codename string, text string, encrypt bool, store bool) (err error) {
 	server, user, password, err2 := parseURL(serverString)
 	if err2 != nil {
 		err = err2
@@ -74,18 +74,20 @@ func uploadData(serverString string, page string, text string, encrypt bool, sto
 		return
 	}
 	log.Trace("server: '%s'", server)
-	log.Trace("uploading page: '%s'", page)
+	log.Trace("uploading page: '%s' to '%s'", name, codename)
 
 	type Payload struct {
-		NewText     string `json:"new_text"`
 		Page        string `json:"page"`
+		FileName    string `json:"file_name"`
+		NewText     string `json:"new_text"`
 		IsEncrypted bool   `json:"is_encrypted"`
 		IsPrimed    bool   `json:"is_primed"`
 	}
 
 	data := Payload{
+		Page:        codename,
+		FileName:    "cowyodel-file:" + name,
 		NewText:     text,
-		Page:        page,
 		IsEncrypted: encrypt,
 		IsPrimed:    !store,
 	}
@@ -120,28 +122,28 @@ func uploadData(serverString string, page string, text string, encrypt bool, sto
 	json.NewDecoder(resp.Body).Decode(&target)
 	log.Trace("%v", target)
 	if target.Message == "Saved" {
-		fmt.Printf("uploaded to %s\n", page)
+		fmt.Printf("uploaded %s to %s\n", name, codename)
 	} else {
 		fmt.Println(target.Message)
 	}
 	return
 }
 
-func downloadData(serverString string, page string, passphrase string) (err error) {
+func downloadData(serverString string, codename string, passphrase string) (err error) {
 	server, user, password, err2 := parseURL(serverString)
 	if err2 != nil {
 		err = err2
 		return
 	}
 	log.Trace("server: '%s'", server)
-	log.Trace("page: '%s'", page)
+	log.Trace("page: '%s'", codename)
 
 	type Payload struct {
 		Page string `json:"page"`
 	}
 
 	data := Payload{
-		Page: page,
+		Page: codename,
 	}
 
 	payloadBytes, err := json.Marshal(data)
@@ -169,6 +171,7 @@ func downloadData(serverString string, page string, passphrase string) (err erro
 	defer resp.Body.Close()
 
 	type Response struct {
+		Name      string `json:"name"`
 		Destroyed bool   `json:"destroyed"`
 		Encrypted bool   `json:"encrypted"`
 		Locked    bool   `json:"locked"`
@@ -180,8 +183,13 @@ func downloadData(serverString string, page string, passphrase string) (err erro
 	json.NewDecoder(resp.Body).Decode(&target)
 	log.Trace("%+v", target)
 	if target.Text == "" {
-		fmt.Printf("'%s' not found", page)
+		fmt.Printf("'%s' not found", codename)
 		return nil
+	}
+	if strings.Contains(target.Name, "cowyodel-file:") {
+		target.Name = strings.Replace(target.Name, "cowyodel-file:", "", -1)
+	} else {
+		target.Name = codename
 	}
 	if target.Encrypted {
 		log.Trace("Decryption activated")
@@ -197,7 +205,7 @@ func downloadData(serverString string, page string, passphrase string) (err erro
 			target.Text = decrypted
 		} else {
 			fmt.Println("Incorrect password, returning to server")
-			uploadData(server, page, target.Text, true, false)
+			uploadData(server, target.Name, codename, target.Text, true, false)
 			return nil
 		}
 	}
@@ -205,19 +213,19 @@ func downloadData(serverString string, page string, passphrase string) (err erro
 	// assume its binary data
 	binaryData, binaryAttemptError := StringToByte(target.Text)
 	if binaryAttemptError == nil {
-		err = ioutil.WriteFile(page, binaryData, 0644)
+		err = ioutil.WriteFile(target.Name, binaryData, 0644)
 		if err != nil {
 			return
 		}
-		fmt.Printf("Wrote binary data to '%s'\n", page)
+		fmt.Printf("Wrote binary data to '%s'\n", target.Name)
 		return
 	}
 
 	// its just a text file
-	err = ioutil.WriteFile(page, []byte(target.Text), 0644)
+	err = ioutil.WriteFile(target.Name, []byte(target.Text), 0644)
 	if err != nil {
 		return
 	}
-	fmt.Printf("Wrote text to '%s'\n", page)
+	fmt.Printf("Wrote text of '%s' to '%s'\n", codename, target.Name)
 	return
 }

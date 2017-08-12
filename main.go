@@ -24,7 +24,7 @@ func main() {
 }
 
 func run() error {
-	var passphrase, page, server string
+	var passphrase, page, codename, server string
 	var encryptFlag, store, name, binary bool
 	app := cli.NewApp()
 	app.Version = version
@@ -104,6 +104,7 @@ func run() error {
 				} else {
 					log = lumber.NewConsoleLogger(lumber.WARN)
 				}
+				codename = GetRandomName()
 				if c.NArg() == 0 {
 					log.Trace("stdin")
 					data, err = ioutil.ReadAll(os.Stdin)
@@ -112,17 +113,14 @@ func run() error {
 					}
 				} else {
 					log.Trace("file data")
+					page = filepath.Base(c.Args().Get(0))
 					data, err = ioutil.ReadFile(c.Args().Get(0))
 					if err != nil {
 						return err
 					}
 					if name {
-						page = filepath.Base(c.Args().Get(0))
+						codename = page
 					}
-				}
-				if page == "" {
-					// generate page name
-					page = GetRandomName()
 				}
 
 				text := ""
@@ -134,7 +132,7 @@ func run() error {
 				} else {
 					text = string(data)
 				}
-				exists, err := pageExists(server, page)
+				exists, err := pageExists(server, codename)
 				if err != nil {
 					log.Trace("Could not check if exists")
 					return err
@@ -167,7 +165,7 @@ func run() error {
 					encryptFlag = true
 				}
 
-				return uploadData(server, page, text, encryptFlag, store)
+				return uploadData(server, page, codename, text, encryptFlag, store)
 			},
 		},
 		{
