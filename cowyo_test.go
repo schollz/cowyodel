@@ -24,23 +24,24 @@ func TestCowyo(t *testing.T) {
 		t.Error("alsdkfjalksdfjlaf should not exist!")
 	}
 
-	err = uploadData(SERVER_STRING, "testpage", "testtext", false, true)
+	err = uploadData(SERVER_STRING, "testpage", "codename", "testtext", false, true)
 	if err != nil {
 		t.Error(err)
 	}
-	exists, err = pageExists(SERVER_STRING, "testpage")
+	exists, err = pageExists(SERVER_STRING, "codename")
 	if err != nil {
 		t.Error(err)
 	}
 	if exists != true {
-		t.Error("testpage should exist!")
+		t.Error("codename should exist!")
 	}
 
-	err = downloadData(SERVER_STRING, "testpage", "")
+	err = downloadData(SERVER_STRING, "codename", "")
 	if err != nil {
 		t.Error(err)
 	}
 
+	// should write to a file called "testpage"
 	d, err := ioutil.ReadFile("testpage")
 	if err != nil {
 		t.Error(err)
