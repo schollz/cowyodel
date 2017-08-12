@@ -188,6 +188,9 @@ func downloadData(serverString string, codename string, passphrase string) (err 
 	}
 	if strings.Contains(target.Name, "cowyodel-file:") {
 		target.Name = strings.Replace(target.Name, "cowyodel-file:", "", -1)
+		if len(target.Name) == 0 {
+			target.Name = codename
+		}
 	} else {
 		target.Name = codename
 	}
