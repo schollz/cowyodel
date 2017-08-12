@@ -4,7 +4,7 @@
     width="260" height="80" border="0" alt="cowyodel">
 <br>
 <a href="https://travis-ci.org/schollz/cowyodel"><img src="https://img.shields.io/travis/schollz/cowyodel.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-1.1.1-brightgreen.svg?style=flat-square" alt="Version"></a>
+<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-1.2.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 <img src="https://img.shields.io/badge/coverage-51%25-yellow.svg?style=flat-square" alt="Code Coverage">
 </p>
 
