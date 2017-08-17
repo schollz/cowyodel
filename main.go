@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -90,11 +91,6 @@ func run() error {
 					Usage:       "passphrase to use for encryption",
 					Destination: &passphrase,
 				},
-				cli.BoolFlag{
-					Name:        "binary, b",
-					Usage:       "binary mode (Gzip + Base64 encoding)",
-					Destination: &binary,
-				},
 			},
 			Action: func(c *cli.Context) error {
 				var data []byte
@@ -124,13 +120,16 @@ func run() error {
 				}
 
 				text := ""
-				if binary {
+				log.Trace("[%+v]\n", http.DetectContentType(data))
+				if strings.Contains(http.DetectContentType(data), "text") {
+					log.Trace("Assuming textual data")
+					text = string(data)
+				} else {
+					log.Trace("Assuming binary data")
 					text, err = BytesToString(data)
 					if err != nil {
 						return err
 					}
-				} else {
-					text = string(data)
 				}
 				exists, err := pageExists(server, codename)
 				if err != nil {
