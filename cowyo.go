@@ -78,7 +78,7 @@ func uploadData(serverString string, name string, codename string, text string, 
 
 	type Payload struct {
 		Page        string `json:"page"`
-		FileName    string `json:"file_name"`
+		Meta        string `json:"meta"`
 		NewText     string `json:"new_text"`
 		IsEncrypted bool   `json:"is_encrypted"`
 		IsPrimed    bool   `json:"is_primed"`
@@ -86,7 +86,7 @@ func uploadData(serverString string, name string, codename string, text string, 
 
 	data := Payload{
 		Page:        codename,
-		FileName:    "cowyodel-file:" + name,
+		Meta:        name,
 		NewText:     text,
 		IsEncrypted: encrypt,
 		IsPrimed:    !store,
@@ -185,14 +185,6 @@ func downloadData(serverString string, codename string, passphrase string) (err 
 	if target.Text == "" {
 		fmt.Printf("'%s' not found", codename)
 		return nil
-	}
-	if strings.Contains(target.Name, "cowyodel-file:") {
-		target.Name = strings.Replace(target.Name, "cowyodel-file:", "", -1)
-		if len(target.Name) == 0 {
-			target.Name = codename
-		}
-	} else {
-		target.Name = codename
 	}
 	if target.Encrypted {
 		log.Trace("Decryption activated")

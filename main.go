@@ -26,7 +26,7 @@ func main() {
 
 func run() error {
 	var passphrase, page, codename, server string
-	var encryptFlag, store, name, binary bool
+	var encryptFlag, store, name bool
 	app := cli.NewApp()
 	app.Version = version
 	app.Compiled = time.Now()
