@@ -120,12 +120,14 @@ func run() error {
 				}
 
 				text := ""
+				dataType := "textual"
 				log.Trace("[%+v]\n", http.DetectContentType(data))
 				if strings.Contains(http.DetectContentType(data), "text") {
 					log.Trace("Assuming textual data")
 					text = string(data)
 				} else {
 					log.Trace("Assuming binary data")
+					dataType = "binary"
 					text, err = BytesToString(data)
 					if err != nil {
 						return err
@@ -164,7 +166,15 @@ func run() error {
 					encryptFlag = true
 				}
 
-				return uploadData(server, page, codename, text, encryptFlag, store)
+				err = uploadData(server, page, codename, text, encryptFlag, store)
+				if err == nil {
+					fmt.Printf("Uploaded %s (%s data)\n\n", page, dataType)
+					if dataType != "binary" {
+						fmt.Printf("View/edit your data:\n\n\t%s/%s\n\n", server, codename)
+					}
+					fmt.Printf("Download using cowyodel:\n\n\tcowyodel --server %s download %s\n\n", server, codename)
+				}
+				return err
 			},
 		},
 		{
@@ -198,7 +208,7 @@ func run() error {
 
 	errMain := app.Run(os.Args)
 	if errMain != nil {
-		log.Error(errMain.Error())
+		fmt.Print(errMain.Error())
 	}
 	return errMain
 }

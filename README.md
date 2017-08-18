@@ -4,8 +4,8 @@
     width="260" height="80" border="0" alt="cowyodel">
 <br>
 <a href="https://travis-ci.org/schollz/cowyodel"><img src="https://img.shields.io/travis/schollz/cowyodel.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-1.2.0-brightgreen.svg?style=flat-square" alt="Version"></a>
-<img src="https://img.shields.io/badge/coverage-51%25-yellow.svg?style=flat-square" alt="Code Coverage">
+<a href="https://github.com/schollz/cowyodel/releases/latest"><img src="https://img.shields.io/badge/version-1.2.2-brightgreen.svg?style=flat-square" alt="Version"></a>
+<img src="https://img.shields.io/badge/coverage-43%25-yellow.svg?style=flat-square" alt="Code Coverage">
 </p>
 
 <p align="center">Easily move things between computers using  <a href="https://github.com/schollz/cowyo">cowyo</a>  :cow: :speech_balloon:</p>
@@ -99,10 +99,10 @@ If the decryption fails, the document will be re-uploaded to the cowyo server.
 
 ### Binary files
 
-Binary files are Gzipped and then Base64 encoded for transfering to/from the server. To upload just use `--binary`, and downloading is exactly the same.
+Binary files are Gzipped and then Base64 encoded for transfering to/from the server. *cowyodel* automatically detects binary data and uploads as such.
 
 ```
-$ cowyodel upload --binary image.jpg
+$ cowyodel upload image.jpg
 uploaded to total-perform-retro
 
 $ cowyodel download image.jpg

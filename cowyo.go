@@ -122,9 +122,9 @@ func uploadData(serverString string, name string, codename string, text string, 
 	json.NewDecoder(resp.Body).Decode(&target)
 	log.Trace("%v", target)
 	if target.Message == "Saved" {
-		fmt.Printf("uploaded %s to %s\n", name, codename)
+		err = nil
 	} else {
-		fmt.Println(target.Message)
+		err = errors.New(target.Message)
 	}
 	return
 }
