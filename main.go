@@ -48,9 +48,7 @@ func run() error {
    Client-side encryption:
 		cowyodel upload --encrypt README.md
 
-	 Binary-file uploading/downloading:
-		cowyodel upload --binary --name image.jpg
-		cowyodel download image.jpg`
+		`
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "server",
@@ -168,11 +166,15 @@ func run() error {
 
 				err = uploadData(server, page, codename, text, encryptFlag, store)
 				if err == nil {
-					fmt.Printf("Uploaded %s (%s data)\n\n", page, dataType)
+					fmt.Printf("Uploaded %s (%s data). Your codephrase: %s\n\n", page, dataType, codename)
 					if dataType != "binary" {
 						fmt.Printf("View/edit your data:\n\n\t%s/%s\n\n", server, codename)
 					}
-					fmt.Printf("Download using cowyodel:\n\n\tcowyodel --server %s download %s\n\n", server, codename)
+					if strings.Contains(server, "cowyo") {
+						fmt.Printf("Download using cowyodel:\n\n\tcowyodel download %s\n\n", codename)
+					} else {
+						fmt.Printf("Download using cowyodel:\n\n\tcowyodel --server %s download %s\n\n", server, codename)
+					}
 				}
 				return err
 			},

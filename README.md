@@ -38,12 +38,28 @@ To share a document with another computer, you first upload it to a cowyo server
 
 ```
 $ cowyodel upload README.md
-uploaded to total-perform-retro
+Uploaded README.md (textual data). Your codephrase: total-perform-retro
+
+View/edit your data:
+
+	https://cowyo.com/total-perform-retro
+
+Download using cowyodel:
+
+	cowyodel download total-perform-retro
 ```
 or
 ```
 $ cat README.md | cowyodel upload
-uploaded to total-perform-retro
+Uploaded (textual data). Your codephrase: total-perform-retro
+
+View/edit your data:
+
+	https://cowyo.com/total-perform-retro
+
+Download using cowyodel:
+
+	cowyodel download total-perform-retro
 ```
 
 After uploading, you will recieve a code-phrase, in the above example the code-phrase is `total-perform-retro`. If you don't want to use code phrases, you can also specify your own name using `-name`, see Advanced Usage below.
@@ -56,7 +72,7 @@ On any other computer connected to the internet, you can download the file using
 
 ```
 $ cowyodel download total-perform-retro
-Wrote text to 'total-perform-retro'
+Wrote text of 'total-perform-retro' to 'README.md'
 ```
 
 After downloading, it will be erased from the cowyo.com. If you don't trust this server, you can also specify your own (see Advanced Usage). To prevent this, you can add `--store`.
@@ -72,11 +88,11 @@ $ cowyodel upload --store FILE
 ```
 
 
-### Specify filename
+### Specify codephrase
 
 ```
 $ cowyodel upload --name README.md
-uploaded to README.md
+Uploaded README.md (textual data). Your codephrase: README.md
 ```
 
 It is possible that someone could have used that page (and locked it) which would not allow that page to be used and a message "Locked, must unlock first" will appear.
@@ -86,11 +102,11 @@ It is possible that someone could have used that page (and locked it) which woul
 ```
 $ cowyodel upload --encrypt README.md
 Enter passphrase: 123
-uploaded to total-perform-retro
+Uploaded README.md (textual data). Your codephrase: total-perform-retro
 
 $ cowyodel download total-perform-retro
 Enter passphrase: 123
-wrote text to 'total-perform-retro'
+Wrote text of 'total-perform-retro' to 'README.md'
 ```
 
 The encryption is fully compatible with the server-side encryption on [cowyo.com](https://cowyo.com), so you can still use the web browser to decrypt/encrypt your document.
@@ -102,15 +118,19 @@ If the decryption fails, the document will be re-uploaded to the cowyo server.
 Binary files are Gzipped and then Base64 encoded for transfering to/from the server. *cowyodel* automatically detects binary data and uploads as such.
 
 ```
-$ cowyodel upload image.jpg
-uploaded to total-perform-retro
+$ cowyodel upload /tmp/image.jpg
+Uploaded image.jpg (binary data). Your codephrase: empire-cricket-tokyo
+
+Download using cowyodel:
+
+	cowyodel download empire-cricket-tokyo
 
 $ cowyodel download image.jpg
-wrote binary data to 'total-perform-retro'
+Wrote binary data to 'image.jpg'
 
-$ sha256sum image.jpg total-perform-retro
-62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *logo.jpg
-62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *total-perform-retro
+$ sha256sum /tmp/image.jpg image.jpg
+62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 */tmp/image.jpg
+62a9583758d54e666ff210be3805483bd76ac522ea649f0264de65124943c0b3 *image.jpg
 ```
 
 _Note:_ you should not access uploaded binary files at via the web browser as it would risk corrupting them.
