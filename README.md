@@ -34,7 +34,7 @@ or just download from the [latest releases](https://github.com/schollz/cowyodel/
 
 ### Upload
 
-To share a document with another computer, you first upload it to a cowyo server. By default *cowyodel* uses cowyo.com, but [you can host your own cowyo server](https://github.com/schollz/cowyo) as well (see Advanced Usage).
+To share a file with another computer, you first upload it to a cowyo server. By default *cowyodel* uses [cowyo.com](https://cowyo.com), but [you can host your own cowyo server](https://github.com/schollz/cowyo) as well (see Advanced Usage).
 
 ```
 $ cowyodel upload README.md
@@ -48,7 +48,9 @@ Download using cowyodel:
 
 	cowyodel download total-perform-retro
 ```
+
 or
+
 ```
 $ cat README.md | cowyodel upload
 Uploaded (textual data). Your codephrase: total-perform-retro
@@ -75,13 +77,15 @@ $ cowyodel download total-perform-retro
 Wrote text of 'total-perform-retro' to 'README.md'
 ```
 
-After downloading, it will be erased from the cowyo.com. If you don't trust this server, you can also specify your own (see Advanced Usage). To prevent this, you can add `--store`.
+After downloading, it will be erased from the cowyo.com. If you don't trust this server, you can also specify your own (see Advanced Usage). You can add `--store` flag to prevent automatic deletion from the cowyo server.
 
 
 Advanced Usage
 ===============
 
-### Persist (and don't delete after first access)
+### Persist (don't delete after first access)
+
+Adding `--store` will keep the file on the server, even after accessing.
 
 ```
 $ cowyodel upload --store FILE
@@ -89,6 +93,8 @@ $ cowyodel upload --store FILE
 
 
 ### Specify codephrase
+
+If you don't want to use a codephrase, use `--name` to specify the name of file.
 
 ```
 $ cowyodel upload --name README.md
@@ -115,7 +121,7 @@ If the decryption fails, the document will be re-uploaded to the cowyo server.
 
 ### Binary files
 
-Binary files are Gzipped and then Base64 encoded for transfering to/from the server. *cowyodel* automatically detects binary data and uploads as such.
+*cowyodel* automatically detects binary data and uploads as such.
 
 ```
 $ cowyodel upload /tmp/image.jpg
@@ -167,7 +173,7 @@ USAGE:
     cat README.md | cowyodel upload
    
    Download a file:
-    cowyodel download CODEPHRASE
+    cowyodel download 2-adoring-thompson
 
    Persist (and don't delete after first access):
     cowyodel upload --store FILE
@@ -178,9 +184,7 @@ USAGE:
    Client-side encryption:
     cowyodel upload --encrypt README.md
 
-   Binary-file uploading/downloading:
-    cowyodel upload --binary --name image.jpg
-    cowyodel download image.jpg
+    
 
 COMMANDS:
      upload, u    upload document
