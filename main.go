@@ -50,41 +50,41 @@ func run() error {
 
 		`
 	app.Flags = []cli.Flag{
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:        "server",
 			Value:       "https://cowyo.com",
 			Usage:       "cowyo server to use",
 			Destination: &server,
 		},
 
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "debug mode",
 			Destination: &debug,
 		},
 	}
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:    "upload",
 			Aliases: []string{"u"},
 			Usage:   "upload document",
 			Flags: []cli.Flag{
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:        "encrypt, e",
 					Usage:       "encrypt using passphrase",
 					Destination: &encryptFlag,
 				},
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:        "store, s",
 					Usage:       "store and persist after reading",
 					Destination: &store,
 				},
-				cli.BoolFlag{
+				&cli.BoolFlag{
 					Name:        "name, n",
 					Usage:       "use name of file",
 					Destination: &name,
 				},
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:        "passphrase, a",
 					Usage:       "passphrase to use for encryption",
 					Destination: &passphrase,
@@ -184,7 +184,7 @@ func run() error {
 			Aliases: []string{"d"},
 			Usage:   "download document",
 			Flags: []cli.Flag{
-				cli.StringFlag{
+				&cli.StringFlag{
 					Name:        "passphrase, a",
 					Usage:       "passphrase to use for encryption",
 					Destination: &passphrase,
